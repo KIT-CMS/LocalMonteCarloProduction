@@ -63,6 +63,7 @@ def scram(path, setupfile, initfile):
     setupfile.write("scram b \n")
     setupfile.write("cd ../../ \n")
     initfile.write("cd ../../ \n")
+    initfile.write("source /cvmfs/grid.cern.ch/umd-c7ui-latest/etc/profile.d/setup-c7-ui-example.sh")
 
 
 def cloneGc(path, setupfile, initfile):
@@ -90,7 +91,6 @@ def updateDriverCommands(index, command, eventsPerJob, label, workdir,
         Update the cmsDriver command accordingly
         example command: cmsDriver.py Configuration/GenProduction/python/TAU-RunIIFall18wmLHEGS-00018-fragment.py --fileout file:TAU-RunIIFall18wmLHEGS-00018.root --mc --eventcontent RAWSIM,LHE --datatier GEN-SIM,LHE --conditions 102X_upgrade2018_realistic_v11 --beamspot Realistic25ns13TeVEarly2018Collision --step LHE,GEN,SIM --geometry DB:Extended --era Run2_2018 --python_filename TAU-RunIIFall18wmLHEGS-00018_1_cfg.py --no_exec --customise Configuration/DataProcessing/Utils.addMonitoring --customise_commands process.RandomNumberGeneratorService.externalLHEProducer.initialSeed="int(${seed})" -n 4348 || exit $? ;
     """
-    filename = 'asdf'
     # parse the command splitted by spaces
     commandList = command.split(" ")
     for i, part in enumerate(commandList):
@@ -104,8 +104,8 @@ def updateDriverCommands(index, command, eventsPerJob, label, workdir,
             filename = "{label}_{index}_cfg.py".format(label=label,
                                                        index=index)
             commandList[i + 1] = "{filename}".format(filename=filename)
-        if "-n " in part:
-            commandList[i + 1] = "{}".format(eventsPerJob)
+        if "$EVENTS" in part:
+            commandList[i] = "{}".format(eventsPerJob)
     setupfile.write(" ".join(commandList))
     setupfile.write("\n")
     print("Generated cmsDriver command for {}".format(filename))

@@ -69,7 +69,7 @@ class McmRequest():
                              self.RequestConfig['fragmentPath']))
         helpers.scram(os.path.join(self.workdir, self.RequestConfig["cmssw"]),
                       f_initial, f_working)
-        helpers.cloneGc(self.workdir, f_initial, f_working)
+        # helpers.cloneGc(self.workdir, f_initial, f_working)
         for i, driver in enumerate(self.RequestConfig["driverCommand"]):
             self.tasks.append(
                 helpers.updateDriverCommands(i, driver, self.eventsPerJob,
@@ -190,6 +190,6 @@ def parse_setup(setup_file):
             data["fragmentPath"] = [
                 s for s in line.split(" ") if "fragment.py" in s
             ][0]
-        if "cmsDriver" in line:
+        if "cmsDriver.py" in line:
             data["driverCommand"].append(line)
     return data
