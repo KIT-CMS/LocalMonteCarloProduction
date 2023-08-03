@@ -1,273 +1,417 @@
 # add new mc requests here like in the example sample shown
 
 example:
-  requestID: "HIG-RunIISummer16NanoAODv5-00031" # the string of the McM request
+  request_id: "HIG-RunIISummer16NanoAODv5-00031" # the string of the McM request
   label: "GluGluH_NanoAOD" # label used for personal bookkeeping
-  inputFiles: "" # specified input files, either path to a filelist or a dbs entry
+  input_files: "" # specified input files, either path to a filelist or a dbs entry
   workdir: "workdir_nano" # path to the desired workdir
-  outputPath: "srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/sbrommer/gc_storage/private_mc_16" # path to the desired output location. This path should be given in correct grid control syntax
-  batchSystem: "freiburg" # batch system option: currently available: freiburg
-  totalEvents: 100000 # total number of events in the task. If an input file is speficied, the whole file will be processed instead
-  eventsPerJob: 1000 # number of events per job
-
-ttbar_lhegen:
-  requestID: "TOP-RunIISummer20UL18wmLHEGEN-00002"
+  output_path: "srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/sbrommer/gc_storage/private_mc_16" # path to the desired output location. This path should be given in correct grid control syntax
+  batch_system: "freiburg" # batch system option: currently available: freiburg
+  total_events: 100000 # total number of events in the task. If an input file is speficied, the whole file will be processed instead
+  events_per_job: 1000 # number of events per job
+  cpus_per_job: 4 # number of cores/threads which should be used by CMSSW to (default if not set = "1")
+  accounting_group: "cms.production" # which condor accounting group should be used (default if not set = "cms.higgs")
+#####
+# TTbar Christian
+# https://cms-pdmv.cern.ch/mcm/chained_requests?prepid=TOP-chain_RunIISummer20UL18wmLHEGEN_flowRunIISummer20UL18SIM_flowRunIISummer20UL18DIGIPremix_flowRunIISummer20UL18HLT_flowRunIISummer20UL18RECO_flowRunIISummer20UL18MiniAODv2_flowRunIISummer20UL18NanoAODv9-00048
+#####
+ttbar_lhegen_cwinter:
+  request_id: "TOP-RunIISummer20UL18wmLHEGEN-00002"
   label: "ttbar_ul18_summer20"
-  inputFiles: ""
+  input_files: ""
   workdir: "ttbar_lhegen"
-  outputPath: "srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/sbrommer/gc_storage/private_ul/ttbar"
-  batchSystem: "freiburg"
-  totalEvents: 400000
-  eventsPerJob: 1000
-ttbar_sim:
-  requestID: "TOP-RunIISummer20UL18SIM-00002"
-  label: "ttbar_ul18_summer20"
-  inputFiles: "/work/sbrommer/mc_production/ul/LocalMonteCarloProduction/ttbar_lhegen/filelist.txt"
+  output_path: "root://cmsxrootd-kit.gridka.de:1094//store/user/cwinter/ul_embedding/MC_UL_production/ttbar"
+  batch_system: "freiburg"
+  total_events: 10000000
+  events_per_job: 1000
+  cpus_per_job: 4
+  accounting_group: "cms.production"
+ttbar_sim_cwinter:
+  request_id: "TOP-RunIISummer20UL18SIM-00002"
+  label: "ttbar_sim_ul18_summer20"
+  input_files: "/work/cwinter/embedding/MC_UL_production/MC_prod/LocalMonteCarloProduction/ttbar_lhegen/ttbar_ul18_summer20_lhegen.dbs"
   workdir: "ttbar_sim"
-  outputPath: "srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/sbrommer/gc_storage/private_ul/ttbar"
-  batchSystem: "freiburg"
-  totalEvents: 400000
-  eventsPerJob: 100
-ttbar_premix:
-  requestID: "TOP-RunIISummer20UL18DIGIPremix-00002"
+  output_path: "root://cmsxrootd-kit.gridka.de:1094//store/user/cwinter/ul_embedding/MC_UL_production/ttbar_sim"
+  batch_system: "freiburg"
+  total_events: 2000000
+  events_per_job: 1000
+  cpus_per_job: 4
+  accounting_group: "cms.production"
+# ttbar_premix_cwinter:
+#   request_id: "TOP-RunIISummer20UL18DIGIPremix-00002"
+#   label: "ttbar_premix_ul18_summer20"
+#   input_files: "/work/sbrommer/mc_production/ul/LocalMonteCarloProduction/ttbar_sim/filelist.txt"
+#   workdir: "ttbar_premix"
+#   output_path: "srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/sbrommer/gc_storage/private_ul/ttbar"
+#   batch_system: "freiburg"
+#   total_events: 400000
+#   events_per_job: 100
+#   cpus_per_job: 4
+#   accounting_group: "cms.production"
+# ttbar_hlt_cwinter:
+#   request_id: "TOP-RunIISummer20UL18HLT-00002"
+#   label: "ttbar_hlt_ul18_summer20"
+#   input_files: "/work/sbrommer/mc_production/ul/LocalMonteCarloProduction/ttbar_premix/filelist.txt"
+#   workdir: "ttbar_hlt"
+#   output_path: "srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/sbrommer/gc_storage/private_ul/ttbar"
+#   batch_system: "freiburg"
+#   total_events: 400000
+#   events_per_job: 3000
+# ttbar_reco_cwinter:
+#   request_id: "TOP-RunIISummer20UL18RECO-00002"
+#   label: "ttbar_reco_ul18_summer20"
+#   input_files: "/work/sbrommer/mc_production/ul/LocalMonteCarloProduction/ttbar_hlt/filelist.txt"
+#   workdir: "ttbar_reco"
+#   output_path: "srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/sbrommer/gc_storage/private_ul/ttbar_reco"
+#   batch_system: "freiburg"
+#   total_events: 400000
+#   events_per_job: 3000
+# ttbar_miniAOD_cwinter:
+#   request_id: "TOP-RunIISummer20UL18MiniAODv2-00104"
+#   label: "ttbar_miniAOD_ul18_summer20"
+#   input_files: "/work/sbrommer/mc_production/ul/LocalMonteCarloProduction/ttbar_reco/filelist.txt"
+#   workdir: "ttbar_miniAOD"
+#   output_path: "srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/sbrommer/gc_storage/private_ul/ttbar_miniAOD"
+#   batch_system: "freiburg"
+#   total_events: 400000
+#   events_per_job: 10000
+# ttbar_nanoAOD_cwinter:
+#   request_id: "TOP-RunIISummer20UL18NanoAODv9-00046"
+#   label: "ttbar_nanoAOD_ul18_summer20"
+#   input_files: "/work/sbrommer/mc_production/ul/LocalMonteCarloProduction/ttbar_miniAOD/filelist.txt"
+#   workdir: "ttbar_nanoAOD"
+#   output_path: "srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/sbrommer/gc_storage/private_ul/ttbar_nanoAOD"
+#   batch_system: "freiburg"
+#   total_events: 400000
+#   events_per_job: 10000
+#####
+# TTbar Sebastian
+#####
+ttbar_lhegen_sbrommer:
+  request_id: "TOP-RunIISummer20UL18wmLHEGEN-00002"
+  label: "ttbar_ul18_summer20"
+  input_files: ""
+  workdir: "ttbar_lhegen"
+  output_path: "srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/sbrommer/gc_storage/private_ul/ttbar"
+  batch_system: "freiburg"
+  total_events: 400000
+  events_per_job: 1000
+ttbar_sim_sbrommer:
+  request_id: "TOP-RunIISummer20UL18SIM-00002"
+  label: "ttbar_ul18_summer20"
+  input_files: "/work/sbrommer/mc_production/ul/LocalMonteCarloProduction/ttbar_lhegen/filelist.txt"
+  workdir: "ttbar_sim"
+  output_path: "srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/sbrommer/gc_storage/private_ul/ttbar"
+  batch_system: "freiburg"
+  total_events: 400000
+  events_per_job: 100
+ttbar_premix_sbrommer:
+  request_id: "TOP-RunIISummer20UL18DIGIPremix-00002"
   label: "ttbar_premix_ul18_summer20"
-  inputFiles: "/work/sbrommer/mc_production/ul/LocalMonteCarloProduction/ttbar_sim/filelist.txt"
+  input_files: "/work/sbrommer/mc_production/ul/LocalMonteCarloProduction/ttbar_sim/filelist.txt"
   workdir: "ttbar_premix"
-  outputPath: "srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/sbrommer/gc_storage/private_ul/ttbar"
-  batchSystem: "freiburg"
-  totalEvents: 400000
-  eventsPerJob: 100
-ttbar_hlt:
-  requestID: "TOP-RunIISummer20UL18HLT-00002"
+  output_path: "srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/sbrommer/gc_storage/private_ul/ttbar"
+  batch_system: "freiburg"
+  total_events: 400000
+  events_per_job: 100
+ttbar_hlt_sbrommer:
+  request_id: "TOP-RunIISummer20UL18HLT-00002"
   label: "ttbar_hlt_ul18_summer20"
-  inputFiles: "/work/sbrommer/mc_production/ul/LocalMonteCarloProduction/ttbar_premix/filelist.txt"
+  input_files: "/work/sbrommer/mc_production/ul/LocalMonteCarloProduction/ttbar_premix/filelist.txt"
   workdir: "ttbar_hlt"
-  outputPath: "srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/sbrommer/gc_storage/private_ul/ttbar"
-  batchSystem: "freiburg"
-  totalEvents: 400000
-  eventsPerJob: 3000
-ttbar_reco:
-  requestID: "TOP-RunIISummer20UL18RECO-00002"
+  output_path: "srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/sbrommer/gc_storage/private_ul/ttbar"
+  batch_system: "freiburg"
+  total_events: 400000
+  events_per_job: 3000
+ttbar_reco_sbrommer:
+  request_id: "TOP-RunIISummer20UL18RECO-00002"
   label: "ttbar_reco_ul18_summer20"
-  inputFiles: "/work/sbrommer/mc_production/ul/LocalMonteCarloProduction/ttbar_hlt/filelist.txt"
+  input_files: "/work/sbrommer/mc_production/ul/LocalMonteCarloProduction/ttbar_hlt/filelist.txt"
   workdir: "ttbar_reco"
-  outputPath: "srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/sbrommer/gc_storage/private_ul/ttbar_reco"
-  batchSystem: "freiburg"
-  totalEvents: 400000
-  eventsPerJob: 3000
-ttbar_miniAOD:
-  requestID: "TOP-RunIISummer20UL18MiniAODv2-00104"
+  output_path: "srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/sbrommer/gc_storage/private_ul/ttbar_reco"
+  batch_system: "freiburg"
+  total_events: 400000
+  events_per_job: 3000
+ttbar_miniAOD_sbrommer:
+  request_id: "TOP-RunIISummer20UL18MiniAODv2-00104"
   label: "ttbar_miniAOD_ul18_summer20"
-  inputFiles: "/work/sbrommer/mc_production/ul/LocalMonteCarloProduction/ttbar_reco/filelist.txt"
+  input_files: "/work/sbrommer/mc_production/ul/LocalMonteCarloProduction/ttbar_reco/filelist.txt"
   workdir: "ttbar_miniAOD"
-  outputPath: "srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/sbrommer/gc_storage/private_ul/ttbar_miniAOD"
-  batchSystem: "freiburg"
-  totalEvents: 400000
-  eventsPerJob: 10000
-ttbar_nanoAOD:
-  requestID: "TOP-RunIISummer20UL18NanoAODv9-00046"
+  output_path: "srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/sbrommer/gc_storage/private_ul/ttbar_miniAOD"
+  batch_system: "freiburg"
+  total_events: 400000
+  events_per_job: 10000
+ttbar_nanoAOD_sbrommer:
+  request_id: "TOP-RunIISummer20UL18NanoAODv9-00046"
   label: "ttbar_nanoAOD_ul18_summer20"
-  inputFiles: "/work/sbrommer/mc_production/ul/LocalMonteCarloProduction/ttbar_miniAOD/filelist.txt"
+  input_files: "/work/sbrommer/mc_production/ul/LocalMonteCarloProduction/ttbar_miniAOD/filelist.txt"
   workdir: "ttbar_nanoAOD"
-  outputPath: "srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/sbrommer/gc_storage/private_ul/ttbar_nanoAOD"
-  batchSystem: "freiburg"
-  totalEvents: 400000
-  eventsPerJob: 10000
+  output_path: "srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/sbrommer/gc_storage/private_ul/ttbar_nanoAOD"
+  batch_system: "freiburg"
+  total_events: 400000
+  events_per_job: 10000
 #####
-# DYJEts
+# DYJEts Christian
+# https://cms-pdmv.cern.ch/mcm/chained_requests?prepid=TAU-chain_RunIISummer20UL18wmLHEGEN_flowRunIISummer20UL18SIM_flowRunIISummer20UL18DIGIPremix_flowRunIISummer20UL18HLT_flowRunIISummer20UL18RECO_flowRunIISummer20UL18MiniAODv2_flowRunIISummer20UL18NanoAODv9-00001&page=0&shown=15
 #####
-dyjetstoll_lhegen:
-  requestID: "TAU-RunIISummer20UL18wmLHEGEN-00001"
+dyjetstoll_lhegen_cwinter:
+  request_id: "TAU-RunIISummer20UL18wmLHEGEN-00001"
   label: "dyjetstoll_ul18_summer20"
-  inputFiles: ""
+  input_files: ""
   workdir: "dyjetstoll_lhegen"
-  outputPath: "srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/sbrommer/gc_storage/private_ul/dyjetstoll"
-  batchSystem: "freiburg"
-  totalEvents: 400000
-  eventsPerJob: 1000
-dyjetstoll_sim:
-  requestID: "TAU-RunIISummer20UL18SIM-00004"
+  output_path: "root://cmsxrootd-kit.gridka.de:1094//store/user/cwinter/ul_embedding/MC_UL_production/dyjetstoll_lhegen"
+  batch_system: "freiburg"
+  total_events: 10000000
+  events_per_job: 1000
+# dyjetstoll_sim_cwinter:
+#   request_id: "TAU-RunIISummer20UL18SIM-00004"
+#   label: "dyjetstoll_ul18_summer20"
+#   input_files: "/work/sbrommer/mc_production/ul/LocalMonteCarloProduction/dyjetstoll_lhegen/filelist.txt"
+#   workdir: "dyjetstoll_sim"
+#   output_path: "root://cmsxrootd-kit.gridka.de:1094//store/user/cwinter/ul_embedding/MC_UL_production/dyjetstoll_sim"
+#   batch_system: "freiburg"
+#   total_events: 10000000
+#   events_per_job: 100
+# dyjetstoll_premix_cwinter:
+#   request_id: "TAU-RunIISummer20UL18DIGIPremix-00004"
+#   label: "dyjetstoll_premix_ul18_summer20"
+#   input_files: "/work/sbrommer/mc_production/ul/LocalMonteCarloProduction/dyjetstoll_sim/filelist.txt"
+#   workdir: "dyjetstoll_premix"
+#   output_path: "root://cmsxrootd-kit.gridka.de:1094//store/user/cwinter/ul_embedding/MC_UL_production/dyjetstoll_premix"
+#   batch_system: "freiburg"
+#   total_events: 10000000
+#   events_per_job: 100
+# dyjetstoll_hlt_cwinter:
+#   request_id: "TAU-RunIISummer20UL18HLT-00004"
+#   label: "dyjetstoll_hlt_ul18_summer20"
+#   input_files: "/work/sbrommer/mc_production/ul/LocalMonteCarloProduction/dyjetstoll_premix/filelist.txt"
+#   workdir: "dyjetstoll_hlt"
+#   output_path: "root://cmsxrootd-kit.gridka.de:1094//store/user/cwinter/ul_embedding/MC_UL_production/dyjetstoll_hlt"
+#   batch_system: "freiburg"
+#   total_events: 10000000
+#   events_per_job: 3000
+# dyjetstoll_reco_cwinter:
+#   request_id: "TAU-RunIISummer20UL18RECO-00004"
+#   label: "dyjetstoll_reco_ul18_summer20"
+#   input_files: "/work/sbrommer/mc_production/ul/LocalMonteCarloProduction/dyjetstoll_hlt/filelist.txt"
+#   workdir: "dyjetstoll_reco"
+#   output_path: "root://cmsxrootd-kit.gridka.de:1094//store/user/cwinter/ul_embedding/MC_UL_production/dyjetstoll_reco"
+#   batch_system: "freiburg"
+#   total_events: 10000000
+#   events_per_job: 3000
+# dyjetstoll_miniAOD_cwinter:
+#   request_id: "TAU-RunIISummer20UL18MiniAODv2-00003"
+#   label: "dyjetstoll_miniAOD_ul18_summer20"
+#   input_files: "/work/sbrommer/mc_production/ul/LocalMonteCarloProduction/dyjetstoll_reco/filelist.txt"
+#   workdir: "dyjetstoll_miniAOD"
+#   output_path: "root://cmsxrootd-kit.gridka.de:1094//store/user/cwinter/ul_embedding/MC_UL_production/dyjetstoll_mini"
+#   batch_system: "freiburg"
+#   total_events: 10000000
+#   events_per_job: 10000
+# dyjetstoll_nanoAOD_cwinter:
+#   request_id: "TAU-RunIISummer20UL18NanoAODv9-00019"
+#   label: "dyjetstoll_nanoAOD_ul18_summer20"
+#   input_files: "/work/sbrommer/mc_production/ul/LocalMonteCarloProduction/dyjetstoll_miniAOD/filelist.txt"
+#   workdir: "dyjetstoll_nanoAOD"
+#   output_path: "root://cmsxrootd-kit.gridka.de:1094//store/user/cwinter/ul_embedding/MC_UL_production/dyjetstoll_nano"
+#   batch_system: "freiburg"
+#   total_events: 10000000
+#   events_per_job: 10000
+#####
+# DYJEts Sebastian
+#####
+dyjetstoll_lhegen_sbrommer:
+  request_id: "TAU-RunIISummer20UL18wmLHEGEN-00001"
   label: "dyjetstoll_ul18_summer20"
-  inputFiles: "/work/sbrommer/mc_production/ul/LocalMonteCarloProduction/dyjetstoll_lhegen/filelist.txt"
+  input_files: ""
+  workdir: "dyjetstoll_lhegen"
+  output_path: "srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/sbrommer/gc_storage/private_ul/dyjetstoll"
+  batch_system: "freiburg"
+  total_events: 400000
+  events_per_job: 1000
+dyjetstoll_sim_sbrommer:
+  request_id: "TAU-RunIISummer20UL18SIM-00004"
+  label: "dyjetstoll_ul18_summer20"
+  input_files: "/work/sbrommer/mc_production/ul/LocalMonteCarloProduction/dyjetstoll_lhegen/filelist.txt"
   workdir: "dyjetstoll_sim"
-  outputPath: "srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/sbrommer/gc_storage/private_ul/dyjetstoll_sim"
-  batchSystem: "freiburg"
-  totalEvents: 400000
-  eventsPerJob: 100
-dyjetstoll_premix:
-  requestID: "TAU-RunIISummer20UL18DIGIPremix-00004"
+  output_path: "srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/sbrommer/gc_storage/private_ul/dyjetstoll_sim"
+  batch_system: "freiburg"
+  total_events: 400000
+  events_per_job: 100
+dyjetstoll_premix_sbrommer:
+  request_id: "TAU-RunIISummer20UL18DIGIPremix-00004"
   label: "dyjetstoll_premix_ul18_summer20"
-  inputFiles: "/work/sbrommer/mc_production/ul/LocalMonteCarloProduction/dyjetstoll_sim/filelist.txt"
+  input_files: "/work/sbrommer/mc_production/ul/LocalMonteCarloProduction/dyjetstoll_sim/filelist.txt"
   workdir: "dyjetstoll_premix"
-  outputPath: "srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/sbrommer/gc_storage/private_ul/dyjetstoll_premix"
-  batchSystem: "freiburg"
-  totalEvents: 400000
-  eventsPerJob: 100
-dyjetstoll_hlt:
-  requestID: "TAU-RunIISummer20UL18HLT-00004"
+  output_path: "srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/sbrommer/gc_storage/private_ul/dyjetstoll_premix"
+  batch_system: "freiburg"
+  total_events: 400000
+  events_per_job: 100
+dyjetstoll_hlt_sbrommer:
+  request_id: "TAU-RunIISummer20UL18HLT-00004"
   label: "dyjetstoll_hlt_ul18_summer20"
-  inputFiles: "/work/sbrommer/mc_production/ul/LocalMonteCarloProduction/dyjetstoll_premix/filelist.txt"
+  input_files: "/work/sbrommer/mc_production/ul/LocalMonteCarloProduction/dyjetstoll_premix/filelist.txt"
   workdir: "dyjetstoll_hlt"
-  outputPath: "srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/sbrommer/gc_storage/private_ul/dyjetstoll_hlt"
-  batchSystem: "freiburg"
-  totalEvents: 400000
-  eventsPerJob: 3000
-dyjetstoll_reco:
-  requestID: "TAU-RunIISummer20UL18RECO-00004"
+  output_path: "srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/sbrommer/gc_storage/private_ul/dyjetstoll_hlt"
+  batch_system: "freiburg"
+  total_events: 400000
+  events_per_job: 3000
+dyjetstoll_reco_sbrommer:
+  request_id: "TAU-RunIISummer20UL18RECO-00004"
   label: "dyjetstoll_reco_ul18_summer20"
-  inputFiles: "/work/sbrommer/mc_production/ul/LocalMonteCarloProduction/dyjetstoll_hlt/filelist.txt"
+  input_files: "/work/sbrommer/mc_production/ul/LocalMonteCarloProduction/dyjetstoll_hlt/filelist.txt"
   workdir: "dyjetstoll_reco"
-  outputPath: "srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/sbrommer/gc_storage/private_ul/dyjetstoll_reco"
-  batchSystem: "freiburg"
-  totalEvents: 400000
-  eventsPerJob: 3000
-dyjetstoll_miniAOD:
-  requestID: "TAU-RunIISummer20UL18MiniAODv2-00003"
+  output_path: "srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/sbrommer/gc_storage/private_ul/dyjetstoll_reco"
+  batch_system: "freiburg"
+  total_events: 400000
+  events_per_job: 3000
+dyjetstoll_miniAOD_sbrommer:
+  request_id: "TAU-RunIISummer20UL18MiniAODv2-00003"
   label: "dyjetstoll_miniAOD_ul18_summer20"
-  inputFiles: "/work/sbrommer/mc_production/ul/LocalMonteCarloProduction/dyjetstoll_reco/filelist.txt"
+  input_files: "/work/sbrommer/mc_production/ul/LocalMonteCarloProduction/dyjetstoll_reco/filelist.txt"
   workdir: "dyjetstoll_miniAOD"
-  outputPath: "srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/sbrommer/gc_storage/private_ul/dyjetstoll_mini"
-  batchSystem: "freiburg"
-  totalEvents: 400000
-  eventsPerJob: 10000
-dyjetstoll_nanoAOD:
-  requestID: "TAU-RunIISummer20UL18NanoAODv9-00019"
+  output_path: "srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/sbrommer/gc_storage/private_ul/dyjetstoll_mini"
+  batch_system: "freiburg"
+  total_events: 400000
+  events_per_job: 10000
+dyjetstoll_nanoAOD_sbrommer:
+  request_id: "TAU-RunIISummer20UL18NanoAODv9-00019"
   label: "dyjetstoll_nanoAOD_ul18_summer20"
-  inputFiles: "/work/sbrommer/mc_production/ul/LocalMonteCarloProduction/dyjetstoll_miniAOD/filelist.txt"
+  input_files: "/work/sbrommer/mc_production/ul/LocalMonteCarloProduction/dyjetstoll_miniAOD/filelist.txt"
   workdir: "dyjetstoll_nanoAOD"
-  outputPath: "srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/sbrommer/gc_storage/private_ul/dyjetstoll_nano"
-  batchSystem: "freiburg"
-  totalEvents: 400000
-  eventsPerJob: 10000
+  output_path: "srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/sbrommer/gc_storage/private_ul/dyjetstoll_nano"
+  batch_system: "freiburg"
+  total_events: 400000
+  events_per_job: 10000
 #####
 # ZZ To 4L
 #####
 ZZTo2L2Nu_lhegen:
-  requestID: "SUS-RunIISummer20UL18wmLHEGEN-00039"
+  request_id: "SUS-RunIISummer20UL18wmLHEGEN-00039"
   label: "ZZTo2L2Nu_ul18_summer20"
-  inputFiles: ""
+  input_files: ""
   workdir: "ZZTo2L2Nu_lhegen"
-  outputPath: "srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/sbrommer/gc_storage/private_ul/ZZTo2L2Nu"
-  batchSystem: "freiburg"
-  totalEvents: 400000
-  eventsPerJob: 1000
+  output_path: "srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/sbrommer/gc_storage/private_ul/ZZTo2L2Nu"
+  batch_system: "freiburg"
+  total_events: 400000
+  events_per_job: 1000
 ZZTo2L2Nu_sim:
-  requestID: "SUS-RunIISummer20UL18SIM-00027"
+  request_id: "SUS-RunIISummer20UL18SIM-00027"
   label: "ZZTo2L2Nu_ul18_summer20"
-  inputFiles: "/work/sbrommer/mc_production/ul/LocalMonteCarloProduction/ZZTo2L2Nu_lhegen/filelist.txt"
+  input_files: "/work/sbrommer/mc_production/ul/LocalMonteCarloProduction/ZZTo2L2Nu_lhegen/filelist.txt"
   workdir: "ZZTo2L2Nu_sim"
-  outputPath: "srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/sbrommer/gc_storage/private_ul/ZZTo2L2Nu_sim"
-  batchSystem: "freiburg"
-  totalEvents: 400000
-  eventsPerJob: 100
+  output_path: "srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/sbrommer/gc_storage/private_ul/ZZTo2L2Nu_sim"
+  batch_system: "freiburg"
+  total_events: 400000
+  events_per_job: 100
 ZZTo2L2Nu_premix:
-  requestID: "SUS-RunIISummer20UL18DIGIPremix-00027"
+  request_id: "SUS-RunIISummer20UL18DIGIPremix-00027"
   label: "ZZTo2L2Nu_premix_ul18_summer20"
-  inputFiles: "/work/sbrommer/mc_production/ul/LocalMonteCarloProduction/ZZTo2L2Nu_sim/filelist.txt"
+  input_files: "/work/sbrommer/mc_production/ul/LocalMonteCarloProduction/ZZTo2L2Nu_sim/filelist.txt"
   workdir: "ZZTo2L2Nu_premix"
-  outputPath: "srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/sbrommer/gc_storage/private_ul/ZZTo2L2Nu_premix"
-  batchSystem: "freiburg"
-  totalEvents: 400000
-  eventsPerJob: 100
+  output_path: "srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/sbrommer/gc_storage/private_ul/ZZTo2L2Nu_premix"
+  batch_system: "freiburg"
+  total_events: 400000
+  events_per_job: 100
 ZZTo2L2Nu_hlt:
-  requestID: "SUS-RunIISummer20UL18HLT-00027"
+  request_id: "SUS-RunIISummer20UL18HLT-00027"
   label: "ZZTo2L2Nu_hlt_ul18_summer20"
-  inputFiles: "/work/sbrommer/mc_production/ul/LocalMonteCarloProduction/ZZTo2L2Nu_premix/filelist.txt"
+  input_files: "/work/sbrommer/mc_production/ul/LocalMonteCarloProduction/ZZTo2L2Nu_premix/filelist.txt"
   workdir: "ZZTo2L2Nu_hlt"
-  outputPath: "srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/sbrommer/gc_storage/private_ul/ZZTo2L2Nu_hlt"
-  batchSystem: "freiburg"
-  totalEvents: 400000
-  eventsPerJob: 3000
+  output_path: "srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/sbrommer/gc_storage/private_ul/ZZTo2L2Nu_hlt"
+  batch_system: "freiburg"
+  total_events: 400000
+  events_per_job: 3000
 ZZTo2L2Nu_reco:
-  requestID: "SUS-RunIISummer20UL18RECO-00027"
+  request_id: "SUS-RunIISummer20UL18RECO-00027"
   label: "ZZTo2L2Nu_reco_ul18_summer20"
-  inputFiles: "/work/sbrommer/mc_production/ul/LocalMonteCarloProduction/ZZTo2L2Nu_hlt/filelist.txt"
+  input_files: "/work/sbrommer/mc_production/ul/LocalMonteCarloProduction/ZZTo2L2Nu_hlt/filelist.txt"
   workdir: "ZZTo2L2Nu_reco"
-  outputPath: "srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/sbrommer/gc_storage/private_ul/ZZTo2L2Nu_reco"
-  batchSystem: "freiburg"
-  totalEvents: 400000
-  eventsPerJob: 3000
+  output_path: "srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/sbrommer/gc_storage/private_ul/ZZTo2L2Nu_reco"
+  batch_system: "freiburg"
+  total_events: 400000
+  events_per_job: 3000
 ZZTo2L2Nu_miniAOD:
-  requestID: "SUS-RunIISummer20UL18MiniAOD-00027"
+  request_id: "SUS-RunIISummer20UL18MiniAOD-00027"
   label: "ZZTo2L2Nu_miniAOD_ul18_summer20"
-  inputFiles: "/work/sbrommer/mc_production/ul/LocalMonteCarloProduction/ZZTo2L2Nu_reco/filelist.txt"
+  input_files: "/work/sbrommer/mc_production/ul/LocalMonteCarloProduction/ZZTo2L2Nu_reco/filelist.txt"
   workdir: "ZZTo2L2Nu_miniAOD"
-  outputPath: "srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/sbrommer/gc_storage/private_ul/ZZTo2L2Nu_miniAOD"
-  batchSystem: "freiburg"
-  totalEvents: 400000
-  eventsPerJob: 10000
+  output_path: "srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/sbrommer/gc_storage/private_ul/ZZTo2L2Nu_miniAOD"
+  batch_system: "freiburg"
+  total_events: 400000
+  events_per_job: 10000
 ZZTo2L2Nu_nanoAOD:
-  requestID: "SUS-RunIISummer20UL18NanoAODv2-00015"
+  request_id: "SUS-RunIISummer20UL18NanoAODv2-00015"
   label: "ZZTo2L2Nu_nanoAOD_ul18_summer20"
-  inputFiles: "/work/sbrommer/mc_production/ul/LocalMonteCarloProduction/ZZTo2L2Nu_miniAOD/filelist.txt"
+  input_files: "/work/sbrommer/mc_production/ul/LocalMonteCarloProduction/ZZTo2L2Nu_miniAOD/filelist.txt"
   workdir: "ZZTo2L2Nu_nanoAOD"
-  outputPath: "srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/sbrommer/gc_storage/private_ul/ZZTo2L2Nu_nanoAOD"
-  batchSystem: "freiburg"
-  totalEvents: 400000
-  eventsPerJob: 10000
+  output_path: "srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/sbrommer/gc_storage/private_ul/ZZTo2L2Nu_nanoAOD"
+  batch_system: "freiburg"
+  total_events: 400000
+  events_per_job: 10000
 #####
 # ZZ To 4L
 #####
 WWTo2L2Nu_lhegen:
-  requestID: "SUS-RunIISummer20UL18wmLHEGEN-00038"
+  request_id: "SUS-RunIISummer20UL18wmLHEGEN-00038"
   label: "WWTo2L2Nu_ul18_summer20"
-  inputFiles: ""
+  input_files: ""
   workdir: "WWTo2L2Nu_lhegen"
-  outputPath: "srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/sbrommer/gc_storage/private_ul/WWTo2L2Nu"
-  batchSystem: "freiburg"
-  totalEvents: 400000
-  eventsPerJob: 1000
+  output_path: "srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/sbrommer/gc_storage/private_ul/WWTo2L2Nu"
+  batch_system: "freiburg"
+  total_events: 400000
+  events_per_job: 1000
 WWTo2L2Nu_sim:
-  requestID: "SUS-RunIISummer20UL18SIM-00056"
+  request_id: "SUS-RunIISummer20UL18SIM-00056"
   label: "WWTo2L2Nu_ul18_summer20"
-  inputFiles: "/work/sbrommer/mc_production/ul/LocalMonteCarloProduction/WWTo2L2Nu_lhegen/filelist.txt"
+  input_files: "/work/sbrommer/mc_production/ul/LocalMonteCarloProduction/WWTo2L2Nu_lhegen/filelist.txt"
   workdir: "WWTo2L2Nu_sim"
-  outputPath: "srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/sbrommer/gc_storage/private_ul/WWTo2L2Nu_sim"
-  batchSystem: "freiburg"
-  totalEvents: 400000
-  eventsPerJob: 100
+  output_path: "srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/sbrommer/gc_storage/private_ul/WWTo2L2Nu_sim"
+  batch_system: "freiburg"
+  total_events: 400000
+  events_per_job: 100
 WWTo2L2Nu_premix:
-  requestID: "SUS-RunIISummer20UL18DIGIPremix-00056"
+  request_id: "SUS-RunIISummer20UL18DIGIPremix-00056"
   label: "WWTo2L2Nu_premix_ul18_summer20"
-  inputFiles: "/work/sbrommer/mc_production/ul/LocalMonteCarloProduction/WWTo2L2Nu_sim/filelist.txt"
+  input_files: "/work/sbrommer/mc_production/ul/LocalMonteCarloProduction/WWTo2L2Nu_sim/filelist.txt"
   workdir: "WWTo2L2Nu_premix"
-  outputPath: "srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/sbrommer/gc_storage/private_ul/WWTo2L2Nu_premix"
-  batchSystem: "freiburg"
-  totalEvents: 400000
-  eventsPerJob: 100
+  output_path: "srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/sbrommer/gc_storage/private_ul/WWTo2L2Nu_premix"
+  batch_system: "freiburg"
+  total_events: 400000
+  events_per_job: 100
 WWTo2L2Nu_hlt:
-  requestID: "SUS-RunIISummer20UL18HLT-00056"
+  request_id: "SUS-RunIISummer20UL18HLT-00056"
   label: "WWTo2L2Nu_hlt_ul18_summer20"
-  inputFiles: "/work/sbrommer/mc_production/ul/LocalMonteCarloProduction/WWTo2L2Nu_premix/filelist.txt"
+  input_files: "/work/sbrommer/mc_production/ul/LocalMonteCarloProduction/WWTo2L2Nu_premix/filelist.txt"
   workdir: "WWTo2L2Nu_hlt"
-  outputPath: "srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/sbrommer/gc_storage/private_ul/WWTo2L2Nu_hlt"
-  batchSystem: "freiburg"
-  totalEvents: 400000
-  eventsPerJob: 3000
+  output_path: "srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/sbrommer/gc_storage/private_ul/WWTo2L2Nu_hlt"
+  batch_system: "freiburg"
+  total_events: 400000
+  events_per_job: 3000
 WWTo2L2Nu_reco:
-  requestID: "SUS-RunIISummer20UL18RECO-00056"
+  request_id: "SUS-RunIISummer20UL18RECO-00056"
   label: "WWTo2L2Nu_reco_ul18_summer20"
-  inputFiles: "/work/sbrommer/mc_production/ul/LocalMonteCarloProduction/WWTo2L2Nu_hlt/filelist.txt"
+  input_files: "/work/sbrommer/mc_production/ul/LocalMonteCarloProduction/WWTo2L2Nu_hlt/filelist.txt"
   workdir: "WWTo2L2Nu_reco"
-  outputPath: "srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/sbrommer/gc_storage/private_ul/WWTo2L2Nu_reco"
-  batchSystem: "freiburg"
-  totalEvents: 400000
-  eventsPerJob: 3000
+  output_path: "srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/sbrommer/gc_storage/private_ul/WWTo2L2Nu_reco"
+  batch_system: "freiburg"
+  total_events: 400000
+  events_per_job: 3000
 WWTo2L2Nu_miniAOD:
-  requestID: "SUS-RunIISummer20UL18MiniAOD-00056"
+  request_id: "SUS-RunIISummer20UL18MiniAOD-00056"
   label: "WWTo2L2Nu_miniAOD_ul18_summer20"
-  inputFiles: "/work/sbrommer/mc_production/ul/LocalMonteCarloProduction/WWTo2L2Nu_reco/filelist.txt"
+  input_files: "/work/sbrommer/mc_production/ul/LocalMonteCarloProduction/WWTo2L2Nu_reco/filelist.txt"
   workdir: "WWTo2L2Nu_miniAOD"
-  outputPath: "srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/sbrommer/gc_storage/private_ul/WWTo2L2Nu_miniAOD"
-  batchSystem: "freiburg"
-  totalEvents: 400000
-  eventsPerJob: 10000
+  output_path: "srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/sbrommer/gc_storage/private_ul/WWTo2L2Nu_miniAOD"
+  batch_system: "freiburg"
+  total_events: 400000
+  events_per_job: 10000
 WWTo2L2Nu_nanoAOD:
-  requestID: "SUS-RunIISummer20UL18NanoAODv2-00039"
+  request_id: "SUS-RunIISummer20UL18NanoAODv2-00039"
   label: "WWTo2L2Nu_nanoAOD_ul18_summer20"
-  inputFiles: "/work/sbrommer/mc_production/ul/LocalMonteCarloProduction/WWTo2L2Nu_miniAOD/filelist.txt"
+  input_files: "/work/sbrommer/mc_production/ul/LocalMonteCarloProduction/WWTo2L2Nu_miniAOD/filelist.txt"
   workdir: "WWTo2L2Nu_nanoAOD"
-  outputPath: "srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/sbrommer/gc_storage/private_ul/WWTo2L2Nu_nanoAOD"
-  batchSystem: "freiburg"
-  totalEvents: 400000
-  eventsPerJob: 10000
+  output_path: "srm://cmssrm-kit.gridka.de:8443/srm/managerv2?SFN=/pnfs/gridka.de/cms/disk-only/store/user/sbrommer/gc_storage/private_ul/WWTo2L2Nu_nanoAOD"
+  batch_system: "freiburg"
+  total_events: 400000
+  events_per_job: 10000
