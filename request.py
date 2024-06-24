@@ -1,195 +1,244 @@
-import requests
 import os
-import helpers
 import subprocess
 
+import requests
 
-class McmRequest():
-    RequestID = ""
-    RequestConfig = {}
+import helpers
 
-    def __init__(self, config_data):
+
+class McmRequest:
+    request_id = ""
+    RequestConfig = {
+        "cmssw": "",
+        "driverCommand": [],
+        "arch": "",
+        "fragment": "",
+        "fragmentPath": "",
+    }
+
+    def __init__(self, config_data, debug=False):
+        self.debug = debug
         if not helpers.validate_config(config_data):
             raise Exception("Yaml config is not correct ! Pls fix")
-        self.RequestID = config_data["requestID"]
+        self.request_id = config_data["request_id"]
         self.label = config_data["label"]
-        self.workdir = os.path.abspath(config_data["workdir"])
-        self.outputPath = config_data["outputPath"]
-        self.batchSystem = config_data["batchSystem"]
-        self.totalEvents = config_data["totalEvents"]
-        self.InputFiles = config_data["inputFiles"]
-        self.eventsPerJob = config_data["eventsPerJob"]
+        self.workdir = os.path.abspath("workdirs/" + config_data["workdir"])
+        self.batch_system = config_data["batch_system"]
+        self.input_files = config_data["input_files"]
+        self.events_per_job = config_data["events_per_job"]
+        self.cpus_per_job = config_data.get("cpus_per_job", 1)
+        self.output_path = config_data["output_path"]
+        self.total_events = config_data["total_events"]
         self.tasks = []
-        self.gc_parameters = {}
+        self.gc_parameters = {
+            "workdir": self.workdir + "/gc_workdir",
+            "jobs": (
+                f"jobs = {int(self.total_events / self.events_per_job)}"
+                if not self.input_files
+                else ""
+            ),  # only set number of jobs if no input files are given which happens in the first step of the simulation chain
+            "config_file": "",
+            "events_per_job": str(self.events_per_job),
+            "se_output_files": "",
+            "se_output_pattern": self.label + "/",
+            "se_path": str(self.output_path),
+            "cpus": str(self.cpus_per_job),
+            "dataset": "",
+            "accounting_group": config_data.get("accounting_group", "cms.higgs"),
+            "scratch_space_used": config_data.get("scratch_space_used", "7500"),
+        }
 
     def setup_all(self):
         """
-            run all nessessay steps
+        run all nessessay steps
         """
-        self.get_request()
+
+        print(
+            f"""Create config for {self.request_id}
+        label: {self.label}
+        input_files: {self.input_files}
+        output_path: {self.output_path}
+        workdir: {self.workdir}
+        batch_system: {self.batch_system}
+        events_per_job: {self.events_per_job}
+        total_events: {self.total_events}
+        cpus_per_job: {self.cpus_per_job}
+        accounting_group: {self.gc_parameters["accounting_group"]}"""
+        )
+        self.get_mcm_setup()
         self.setup_cmssw()
         self.generate_gc_config()
         self.modify_cmsRun_for_gc()
         self.finalize()
 
-    def get_request(self):
+    def get_mcm_setup(self):
         """
-            get request from McM
+        get setup script from McM
         """
         url = "https://cms-pdmv.cern.ch/mcm/public/restapi/requests/get_setup/{request}".format(
-            request=self.RequestID)
-        print(url)
+            request=self.request_id
+        )
+        if self.debug:
+            print(f" Get Setup script from McM: {url}")
         setup = requests.get(url, verify=False)
-        self.RequestConfig = parse_setup(setup.text)
+
+        # parse setup script to get CMSSW version, architecture, fragment and cmsDriver command
+        for line in setup.text.split("\n"):
+            if "ARCH" in line and self.RequestConfig["arch"] == "":
+                self.RequestConfig["arch"] = [s for s in line.split("=") if "gcc" in s][
+                    0
+                ]
+            if "scram" in line and self.RequestConfig["cmssw"] == "":
+                self.RequestConfig["cmssw"] = [
+                    s for s in line.split(" ") if "CMSSW_" in s
+                ][0]
+            if "get_fragment" in line:
+                self.RequestConfig["fragment"] = [
+                    s for s in line.split(" ") if "https" in s
+                ][0]
+                self.RequestConfig["fragmentPath"] = [
+                    s for s in line.split(" ") if "fragment.py" in s
+                ][0]
+            if "cmsDriver.py" in line:
+                self.RequestConfig["driverCommand"].append(line)
 
     def setup_cmssw(self):
         """
-            setup CMSSW workdir
+        setup CMSSW workdir
         """
-        print("Setting up Grid Control for {}".format(self.RequestID))
-        print("generating source script {}.sh".format(self.label))
+        if self.debug:
+            print(f"Create initial and working scripts and fill it with cmssw setup")
         helpers.createFolder(self.workdir)
-        f_initial = open("{}/{}_initial.sh".format(self.workdir, self.label),
-                         "w+")
-        f_working = open("{}/{}_working.sh".format(self.workdir, self.label),
-                         "w+")
+        f_initial = open("{}/{}_initial.sh".format(self.workdir, self.label), "w+")
+        f_working = open("{}/{}_working.sh".format(self.workdir, self.label), "w+")
+
+        f_initial.write("#!/bin/bash\n")
+        f_working.write("#!/bin/bash\n")
 
         if helpers.createFolder(
-                os.path.join(self.workdir, self.RequestConfig["cmssw"],
-                             "src")):
-            helpers.initiate_cmssw(self.workdir, self.RequestConfig["cmssw"],
-                                   self.RequestConfig["arch"], f_initial,
-                                   f_working)
+            os.path.join(self.workdir, self.RequestConfig["cmssw"], "src")
+        ):
+            helpers.initiate_cmssw(
+                self.workdir,
+                self.RequestConfig["cmssw"],
+                self.RequestConfig["arch"],
+                f_initial,
+                f_working,
+            )
         else:
-            print("workdir is already setup")
-        if self.RequestConfig['fragment'] is not "":
+            print("WARNING: Workdir is already setup")
+
+        # downlaod fragment script if needed
+        if self.RequestConfig["fragment"] != "":
             helpers.getFragment(
-                self.RequestID, self.RequestConfig['fragment'],
-                os.path.join(self.workdir, self.RequestConfig["cmssw"], "src",
-                             self.RequestConfig['fragmentPath']))
-        helpers.scram(os.path.join(self.workdir, self.RequestConfig["cmssw"]),
-                      f_initial, f_working)
-        # helpers.cloneGc(self.workdir, f_initial, f_working)
+                self.request_id,
+                self.RequestConfig["fragment"],
+                os.path.join(
+                    self.workdir,
+                    self.RequestConfig["cmssw"],
+                    "src",
+                    self.RequestConfig["fragmentPath"],
+                ),
+            )
+        # write cmssw setup to initial and working script
+        helpers.scram(
+            os.path.join(self.workdir, self.RequestConfig["cmssw"]),
+            f_initial,
+            f_working,
+        )
+
+        # update the cmsDriver command with the correct input and output paths
         for i, driver in enumerate(self.RequestConfig["driverCommand"]):
             self.tasks.append(
-                helpers.updateDriverCommands(i, driver, self.eventsPerJob,
-                                             self.label, self.workdir,
-                                             f_initial))
+                helpers.updateDriverCommands(
+                    i,
+                    driver,
+                    self.events_per_job,
+                    self.label,
+                    f_initial,
+                    self.cpus_per_job,
+                    debug=self.debug,
+                )
+            )
         # construct dict for gc config file
-        self.gc_parameters["workdir"] = self.workdir
-        self.gc_parameters["jobs"] = str(
-            int(self.totalEvents / self.eventsPerJob))
-        self.gc_parameters["config file"] = " ".join(self.tasks)
-        self.gc_parameters["events per job"] = str(self.eventsPerJob)
-        self.gc_parameters["se output files"] = self.tasks[-1].replace(
-            "_cfg.py", ".root")
-        self.gc_parameters["se output pattern"] = self.label + "/"
-        self.gc_parameters["se path"] = str(self.outputPath)
+        self.gc_parameters["config_file"] = " ".join(self.tasks)
+        self.gc_parameters["se_output_files"] = self.tasks[-1].replace(
+            "_cfg.py", ".root"
+        )
         # check if input file is a dbs link or a filelist
-        self.gc_parameters["dataset"] = ""
-        if self.InputFiles is not "":
-            if os.path.isfile(self.InputFiles):
-                self.gc_parameters["dataset"] = "{} : list:{}".format(
-                    self.label, self.InputFiles)
-            elif len(self.InputFiles.split("/")) == 4:
-                self.gc_parameters["dataset"] = "{} : {}".format(
-                    self.label, self.InputFiles)
+        if self.input_files != "":
+            if os.path.isfile(self.input_files):
+                self.gc_parameters["dataset"] = (
+                    f"dataset = {self.label} : list:{self.input_files}"
+                )
+            elif len(self.input_files.split("/")) == 4:
+                self.gc_parameters["dataset"] = (
+                    f"dataset = {self.label} : {self.input_files}"
+                )
             else:
-                raise Exception("{} is not a valid Inputfile !".format(
-                    self.InputFiles))
+                raise Exception(f"{self.input_files} is not a valid Inputfile !")
+        # close files and make them executable
         f_initial.close()
         f_working.close()
-        os.chmod("{}/{}_initial.sh".format(self.workdir, self.label), 0o744)
+        os.chmod(f"{self.workdir}/{self.label}_initial.sh", 0o744)
         # run the setup shell script
-        process = subprocess.Popen("./{}_initial.sh".format(self.label),
-                                   stdout=subprocess.PIPE,
-                                   shell=True,
-                                   cwd=self.workdir)
+        process = subprocess.Popen(
+            f"./{self.label}_initial.sh",
+            stdout=subprocess.PIPE,
+            shell=True,
+            cwd=self.workdir,
+        )
+        print("\nSetting up CMSSW and running CMSDriver:")
         print(process.communicate()[0])
         process.wait()
 
     def generate_gc_config(self):
         """
-            automatically adapt a defaut gc config according to the paramters given by the user and by the request
+        automatically adapt a defaut gc config according to the paramters given by the user and by the request
         """
-        print("Setting up GC config for {}".format(self.batchSystem))
+        if self.debug:
+            print(f"Setting up GC config for {self.batch_system}")
         try:
-            default_config = open(
-                "gc_configs/{}.conf".format(self.batchSystem), "r")
+            default_config = open(f"gc_configs/{self.batch_system}.conf", "r")
         except IOError:
             raise Exception(
-                "No default config for {} found in gc_configs".format(
-                    self.batchSystem))
+                f"No default config for {self.batch_system} found in gc_configs"
+            )
         f_config = open(
-            "{workdir}/gc_{label}_{batch}.conf".format(workdir=self.workdir,
-                                                       label=self.label,
-                                                       batch=self.batchSystem),
-            "w+")
-        for line in default_config:
-            if "__set__" not in line:
-                f_config.write(line)
-            elif "dataset" in line and self.gc_parameters["dataset"] is "":
-                # in this case, no input files are needed and the option is not required in the config
-                continue
-            elif "jobs" in line and self.gc_parameters["dataset"] is not "":
-                # in this case, the number of jobs is given by the size of the input file
-                continue
-            else:
-                f_config.write(modify_config(line, self.gc_parameters))
-        print("Finished writing {workdir}/gc_{label}_{batch}.conf".format(
-            workdir=self.workdir, label=self.label, batch=self.batchSystem))
+            f"{self.workdir}/gc_{self.label}_{self.batch_system}.conf", "w+"
+        )
+        f_config.write(default_config.read().format(**self.gc_parameters))
+        if self.debug:
+            print(
+                f"Finished writing {self.workdir}/gc_{self.label}_{self.batch_system}.conf"
+            )
         default_config.close()
         f_config.close()
 
     def modify_cmsRun_for_gc(self):
         """
-            modify the config such that it works with grid control
+        modify the config such that it works with grid control
         """
         for i, task in enumerate(self.tasks):
-            print("Modifying {workdir}/{filename}".format(workdir=self.workdir,
-                                                          filename=task))
-            configfile = open(
-                "{workdir}/{filename}".format(workdir=self.workdir,
-                                              filename=task), "a+")
+            print(f"Modifying {self.workdir}/{task}")
+            configfile = open(f"{self.workdir}/{task}", "a+")
+            if self.cpus_per_job > 1:
+                helpers.appendMultiThreading(configfile, self.cpus_per_job)
             helpers.appendSeeds(configfile)
             if i == 0:
                 helpers.appendGCSpecifics(configfile)
 
     def finalize(self):
-        print("----------------------------------------------")
-        print("      Finished Setup Successfully!     ")
-        print("----------------------------------------------")
-        print("In order to run the pulled request locally do:")
-        print("----------------------------------------------")
-        print("source {}/{}_working.sh".format(self.workdir, self.label))
-        print("go.py {workdir}/gc_{label}_{batch}.conf".format(
-            workdir=self.workdir, label=self.label, batch=self.batchSystem))
-
-
-def modify_config(line, dict):
-    """
-        set given value in the line with the given parameter in the dict
-    """
-    for parameter in dict.keys():
-        if parameter in line:
-            return line.replace("__set__", dict[parameter])
-
-
-def parse_setup(setup_file):
-    """
-        parse the McM request file
-    """
-    data = {"cmssw": "", "driverCommand": [], 'arch': "", "fragment": "", "fragmentPath": ""}
-    for line in setup_file.split("\n"):
-        if "ARCH" in line and data["arch"] == "":
-            data["arch"] = [s for s in line.split("=") if "gcc" in s][0]
-        if "scram" in line and data["cmssw"] == "":
-            data["cmssw"] = [s for s in line.split(" ") if "CMSSW_" in s][0]
-        if "get_fragment" in line:
-            data["fragment"] = [s for s in line.split(" ") if "https" in s][0]
-            data["fragmentPath"] = [
-                s for s in line.split(" ") if "fragment.py" in s
-            ][0]
-        if "cmsDriver.py" in line:
-            data["driverCommand"].append(line)
-    return data
+        print(
+            "----------------------------------------------\n"
+            "      Finished Setup Successfully!     \n"
+            "----------------------------------------------\n"
+            "In order to run the pulled request locally do:\n"
+            "----------------------------------------------\n"
+            f"source {self.workdir}/{self.label}_working.sh\n"
+            f"grid-control/go.py {self.workdir}/gc_{self.label}_{self.batch_system}.conf\n"
+            "----------------------------------------------\n"
+            "To create the filelists do:\n"
+            "----------------------------------------------\n"
+            f"grid-control/scripts/dataset_list_from_gc.py {self.workdir}/gc_{self.label}_{self.batch_system}.conf -o {self.workdir}/filelist.dbs"
+        )

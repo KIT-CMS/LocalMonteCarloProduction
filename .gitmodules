@@ -1,0 +1,3 @@
+[submodule "grid-control"]
+	path = grid-control
+	url = git@github.com:KIT-CMS/grid-control.git
