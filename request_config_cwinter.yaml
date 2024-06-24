@@ -16,79 +16,79 @@ example:
 # TTbar 2018
 # https://cms-pdmv.cern.ch/mcm/chained_requests?prepid=TOP-chain_RunIISummer20UL18wmLHEGEN_flowRunIISummer20UL18SIM_flowRunIISummer20UL18DIGIPremix_flowRunIISummer20UL18HLT_flowRunIISummer20UL18RECO_flowRunIISummer20UL18MiniAODv2_flowRunIISummer20UL18NanoAODv9-00048
 #####
-ttbar_lhegen_cwinter:
+2018UL_ttbar_lhegen_cwinter:
   request_id: "TOP-RunIISummer20UL18wmLHEGEN-00002"
   label: "ttbar_ul18_summer20"
   input_files: ""
   workdir: "ttbar_lhegen"
-  output_path: "root://cmsxrootd-kit.gridka.de:1094//store/user/cwinter/ul_embedding/MC_UL_production/ttbar"
+  output_path: "root://cmsxrootd-kit.gridka.de:1094//store/user/cwinter/ul_embedding/MC_UL_production/2018UL/ttbar"
   batch_system: "freiburg"
   total_events: 10000000
   events_per_job: 1000
   cpus_per_job: 4
   accounting_group: "cms.production"
-ttbar_sim_cwinter:
+2018UL_ttbar_sim_cwinter:
   request_id: "TOP-RunIISummer20UL18SIM-00002"
   label: "ttbar_sim_ul18_summer20"
   input_files: "/work/cwinter/embedding/MC_UL_production/MC_prod/LocalMonteCarloProduction/ttbar_lhegen/ttbar_ul18_summer20_lhegen.dbs"
   workdir: "ttbar_sim"
-  output_path: "root://cmsxrootd-kit.gridka.de:1094//store/user/cwinter/ul_embedding/MC_UL_production/ttbar_sim"
+  output_path: "root://cmsxrootd-kit.gridka.de:1094//store/user/cwinter/ul_embedding/MC_UL_production/2018UL/ttbar_sim"
   batch_system: "freiburg"
   total_events: 2500000
   events_per_job: 1000
   cpus_per_job: 4
   accounting_group: "cms.production"
-ttbar_premix_cwinter:
+2018UL_ttbar_premix_cwinter:
   request_id: "TOP-RunIISummer20UL18DIGIPremix-00002"
   label: "ttbar_premix_ul18_summer20"
   input_files: "/work/cwinter/embedding/MC_UL_production/MC_prod/LocalMonteCarloProduction/workdirs/ttbar_sim/filelist.dbs"
   workdir: "ttbar_premix"
-  output_path: "root://cmsxrootd-kit.gridka.de:1094//store/user/cwinter/ul_embedding/MC_UL_production/ttbar_premix"
+  output_path: "root://cmsxrootd-kit.gridka.de:1094//store/user/cwinter/ul_embedding/MC_UL_production/2018UL/ttbar_premix"
   batch_system: "freiburg"
   total_events: 2500000
   events_per_job: 1000
   cpus_per_job: 4
   accounting_group: "cms.production"
-ttbar_hlt_cwinter:
+2018UL_ttbar_hlt_cwinter:
   request_id: "TOP-RunIISummer20UL18HLT-00002"
   label: "ttbar_hlt_ul18_summer20"
   input_files: "/work/cwinter/embedding/MC_UL_production/MC_prod/LocalMonteCarloProduction/workdirs/ttbar_premix/filelist.dbs"
   workdir: "ttbar_hlt"
-  output_path: "root://cmsxrootd-kit.gridka.de:1094//store/user/cwinter/ul_embedding/MC_UL_production/ttbar_hlt"
+  output_path: "root://cmsxrootd-kit.gridka.de:1094//store/user/cwinter/ul_embedding/MC_UL_production/2018UL/ttbar_hlt"
   batch_system: "freiburg"
   total_events: 2500000
   events_per_job: 4000
   cpus_per_job: 4
   accounting_group: "cms.production"
   scratch_space_used: 12000
-ttbar_reco_cwinter:
+2018UL_ttbar_reco_cwinter:
   request_id: "TOP-RunIISummer20UL18RECO-00002"
   label: "ttbar_reco_ul18_summer20"
   input_files: "/work/cwinter/embedding/MC_UL_production/MC_prod/LocalMonteCarloProduction/workdirs/ttbar_hlt/filelist.dbs"
   workdir: "ttbar_reco"
-  output_path: "root://cmsxrootd-kit.gridka.de:1094//store/user/cwinter/ul_embedding/MC_UL_production/ttbar_reco"
+  output_path: "root://cmsxrootd-kit.gridka.de:1094//store/user/cwinter/ul_embedding/MC_UL_production/2018UL/ttbar_reco"
   batch_system: "freiburg"
   total_events: 2500000
   events_per_job: 2000
   cpus_per_job: 4
   accounting_group: "cms.production"
-ttbar_miniAOD_cwinter:
+2018UL_ttbar_miniAOD_cwinter:
   request_id: "TOP-RunIISummer20UL18MiniAODv2-00104"
   label: "ttbar_miniAOD_ul18_summer20"
   input_files: "/work/cwinter/embedding/MC_UL_production/MC_prod/LocalMonteCarloProduction/workdirs/ttbar_reco/filelist.dbs"
   workdir: "ttbar_miniAOD"
-  output_path: "root://cmsxrootd-kit.gridka.de:1094//store/user/cwinter/ul_embedding/MC_UL_production/ttbar_miniAOD"
+  output_path: "root://cmsxrootd-kit.gridka.de:1094//store/user/cwinter/ul_embedding/MC_UL_production/2018UL/ttbar_miniAOD"
   batch_system: "freiburg"
   total_events: 2500000
   events_per_job: 10000
   cpus_per_job: 4
   accounting_group: "cms.production"
-ttbar_nanoAOD_cwinter:
+2018UL_ttbar_nanoAOD_cwinter:
   request_id: "TOP-RunIISummer20UL18NanoAODv9-00046"
   label: "ttbar_nanoAOD_ul18_summer20"
   input_files: "/work/cwinter/embedding/MC_UL_production/MC_prod/LocalMonteCarloProduction/workdirs/ttbar_miniAOD/filelist.dbs"
   workdir: "ttbar_nanoAOD"
-  output_path: "root://cmsxrootd-kit.gridka.de:1094//store/user/cwinter/ul_embedding/MC_UL_production/ttbar_nanoAOD"
+  output_path: "root://cmsxrootd-kit.gridka.de:1094//store/user/cwinter/ul_embedding/MC_UL_production/2018UL/ttbar_nanoAOD"
   batch_system: "freiburg"
   total_events: 2500000
   events_per_job: 10000
@@ -98,79 +98,79 @@ ttbar_nanoAOD_cwinter:
 # DYJEts 2018
 # https://cms-pdmv.cern.ch/mcm/chained_requests?prepid=TAU-chain_RunIISummer20UL18wmLHEGEN_flowRunIISummer20UL18SIM_flowRunIISummer20UL18DIGIPremix_flowRunIISummer20UL18HLT_flowRunIISummer20UL18RECO_flowRunIISummer20UL18MiniAODv2_flowRunIISummer20UL18NanoAODv9-00001&page=0&shown=15
 #####
-dyjetstoll_lhegen_cwinter:
+2018UL_dyjetstoll_lhegen_cwinter:
   request_id: "TAU-RunIISummer20UL18wmLHEGEN-00001"
   label: "dyjetstoll_ul18_summer20"
   input_files: ""
   workdir: "dyjetstoll_lhegen"
-  output_path: "root://cmsxrootd-kit.gridka.de:1094//store/user/cwinter/ul_embedding/MC_UL_production/dyjetstoll_lhegen"
+  output_path: "root://cmsxrootd-kit.gridka.de:1094//store/user/cwinter/ul_embedding/MC_UL_production/2018UL/dyjetstoll_lhegen"
   batch_system: "freiburg"
   total_events: 25000000
   events_per_job: 1000
-dyjetstoll_sim_cwinter:
+2018UL_dyjetstoll_sim_cwinter:
   request_id: "TAU-RunIISummer20UL18SIM-00004"
   label: "dyjetstoll_ul18_summer20"
   input_files: "/work/cwinter/embedding/MC_UL_production/MC_prod/LocalMonteCarloProduction/dyjetstoll_lhegen/dyjetstoll_ul18_summer20_lhegen.dbs"
   workdir: "dyjetstoll_sim"
-  output_path: "root://cmsxrootd-kit.gridka.de:1094//store/user/cwinter/ul_embedding/MC_UL_production/dyjetstoll_sim"
+  output_path: "root://cmsxrootd-kit.gridka.de:1094//store/user/cwinter/ul_embedding/MC_UL_production/2018UL/dyjetstoll_sim"
   batch_system: "freiburg"
   total_events: 25000000
   events_per_job: 1000
   cpus_per_job: 4
   accounting_group: "cms.production"
   scratch_space_used: 9500
-dyjetstoll_premix_cwinter:
+2018UL_dyjetstoll_premix_cwinter:
   request_id: "TAU-RunIISummer20UL18DIGIPremix-00004"
   label: "dyjetstoll_premix_ul18_summer20"
   input_files: "/work/cwinter/embedding/MC_UL_production/MC_prod/LocalMonteCarloProduction/workdirs/dyjetstoll_sim/filelist.dbs"
   workdir: "dyjetstoll_premix"
-  output_path: "root://cmsxrootd-kit.gridka.de:1094//store/user/cwinter/ul_embedding/MC_UL_production/dyjetstoll_premix"
+  output_path: "root://cmsxrootd-kit.gridka.de:1094//store/user/cwinter/ul_embedding/MC_UL_production/2018UL/dyjetstoll_premix"
   batch_system: "freiburg"
   total_events: 25000000
   events_per_job: 1000
   cpus_per_job: 4
   accounting_group: "cms.production"
-dyjetstoll_hlt_cwinter:
+2018UL_dyjetstoll_hlt_cwinter:
   request_id: "TAU-RunIISummer20UL18HLT-00004"
   label: "dyjetstoll_hlt_ul18_summer20"
   input_files: "/work/cwinter/embedding/MC_UL_production/MC_prod/LocalMonteCarloProduction/workdirs/dyjetstoll_premix/filelist.dbs"
   workdir: "dyjetstoll_hlt"
-  output_path: "root://cmsxrootd-kit.gridka.de:1094//store/user/cwinter/ul_embedding/MC_UL_production/dyjetstoll_hlt"
+  output_path: "root://cmsxrootd-kit.gridka.de:1094//store/user/cwinter/ul_embedding/MC_UL_production/2018UL/dyjetstoll_hlt"
   batch_system: "freiburg"
   total_events: 25000000
   events_per_job: 2000
   cpus_per_job: 4
   accounting_group: "cms.production"
   scratch_space_used: 12000
-dyjetstoll_reco_cwinter:
+2018UL_dyjetstoll_reco_cwinter:
   request_id: "TAU-RunIISummer20UL18RECO-00004"
   label: "dyjetstoll_reco_ul18_summer20"
   input_files: "/work/cwinter/embedding/MC_UL_production/MC_prod/LocalMonteCarloProduction/workdirs/dyjetstoll_hlt/filelist.dbs"
   workdir: "dyjetstoll_reco"
-  output_path: "root://cmsxrootd-kit.gridka.de:1094//store/user/cwinter/ul_embedding/MC_UL_production/dyjetstoll_reco"
+  output_path: "root://cmsxrootd-kit.gridka.de:1094//store/user/cwinter/ul_embedding/MC_UL_production/2018UL/dyjetstoll_reco"
   batch_system: "freiburg"
   total_events: 25000000
   events_per_job: 2000
   cpus_per_job: 4
   accounting_group: "cms.production"
   scratch_space_used: 10000
-dyjetstoll_miniAOD_cwinter:
+2018UL_dyjetstoll_miniAOD_cwinter:
   request_id: "TAU-RunIISummer20UL18MiniAODv2-00003"
   label: "dyjetstoll_miniAOD_ul18_summer20"
   input_files: "/work/cwinter/embedding/MC_UL_production/MC_prod/LocalMonteCarloProduction/workdirs/dyjetstoll_reco/filelist.dbs"
   workdir: "dyjetstoll_miniAOD"
-  output_path: "root://cmsxrootd-kit.gridka.de:1094//store/user/cwinter/ul_embedding/MC_UL_production/dyjetstoll_mini"
+  output_path: "root://cmsxrootd-kit.gridka.de:1094//store/user/cwinter/ul_embedding/MC_UL_production/2018UL/dyjetstoll_mini"
   batch_system: "freiburg"
   total_events: 25000000
   events_per_job: 10000
   cpus_per_job: 4
   accounting_group: "cms.production"
-dyjetstoll_nanoAOD_cwinter:
+2018UL_dyjetstoll_nanoAOD_cwinter:
   request_id: "TAU-RunIISummer20UL18NanoAODv9-00019"
   label: "dyjetstoll_nanoAOD_ul18_summer20"
   input_files: "/work/cwinter/embedding/MC_UL_production/MC_prod/LocalMonteCarloProduction/workdirs/dyjetstoll_miniAOD/filelist.dbs"
   workdir: "dyjetstoll_nanoAOD"
-  output_path: "root://cmsxrootd-kit.gridka.de:1094//store/user/cwinter/ul_embedding/MC_UL_production/dyjetstoll_nano"
+  output_path: "root://cmsxrootd-kit.gridka.de:1094//store/user/cwinter/ul_embedding/MC_UL_production/2018UL/dyjetstoll_nano"
   batch_system: "freiburg"
   total_events: 25000000
   events_per_job: 10000
