@@ -41,6 +41,7 @@ class McmRequest:
             "cpus": str(self.cpus_per_job),
             "dataset": "",
             "accounting_group": config_data.get("accounting_group", "cms.higgs"),
+            "scratch_space_used": config_data.get("scratch_space_used", "7500"),
         }
 
     def setup_all(self):

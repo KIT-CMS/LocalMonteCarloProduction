@@ -17,7 +17,7 @@ def validate_config(dict):
         "total_events",
         "events_per_job",
     ]
-    keys_with_defaults = ["cpus_per_job", "accounting_group"]
+    keys_with_defaults = ["cpus_per_job", "accounting_group", "scratch_space_used"]
     all_possible_keys = required_keys + keys_with_defaults
     # check if all given keys are valid
     for key in dict.keys():
