@@ -60,6 +60,7 @@ ttbar_hlt_cwinter:
   events_per_job: 4000
   cpus_per_job: 4
   accounting_group: "cms.production"
+  scratch_space_used: 12000
 ttbar_reco_cwinter:
   request_id: "TOP-RunIISummer20UL18RECO-00002"
   label: "ttbar_reco_ul18_summer20"
@@ -117,6 +118,7 @@ dyjetstoll_sim_cwinter:
   events_per_job: 1000
   cpus_per_job: 4
   accounting_group: "cms.production"
+  scratch_space_used: 9500
 dyjetstoll_premix_cwinter:
   request_id: "TAU-RunIISummer20UL18DIGIPremix-00004"
   label: "dyjetstoll_premix_ul18_summer20"
@@ -139,6 +141,7 @@ dyjetstoll_hlt_cwinter:
   events_per_job: 2000
   cpus_per_job: 4
   accounting_group: "cms.production"
+  scratch_space_used: 12000
 dyjetstoll_reco_cwinter:
   request_id: "TAU-RunIISummer20UL18RECO-00004"
   label: "dyjetstoll_reco_ul18_summer20"
@@ -150,6 +153,7 @@ dyjetstoll_reco_cwinter:
   events_per_job: 2000
   cpus_per_job: 4
   accounting_group: "cms.production"
+  scratch_space_used: 10000
 dyjetstoll_miniAOD_cwinter:
   request_id: "TAU-RunIISummer20UL18MiniAODv2-00003"
   label: "dyjetstoll_miniAOD_ul18_summer20"
