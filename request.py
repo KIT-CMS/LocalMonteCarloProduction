@@ -57,7 +57,8 @@ class McmRequest:
         batch_system: {self.batch_system}
         events_per_job: {self.events_per_job}
         total_events: {self.total_events}
-        cpus_per_job: {self.cpus_per_job}"""
+        cpus_per_job: {self.cpus_per_job}
+        accounting_group: {self.gc_parameters["accounting_group"]}"""
         )
         self.get_mcm_setup()
         self.setup_cmssw()
@@ -166,7 +167,9 @@ class McmRequest:
                     "dataset"
                 ] = f"dataset = {self.label} : list:{self.input_files}"
             elif len(self.input_files.split("/")) == 4:
-                self.gc_parameters["dataset"] = f"dataset = {self.label} : {self.input_files}"
+                self.gc_parameters[
+                    "dataset"
+                ] = f"dataset = {self.label} : {self.input_files}"
             else:
                 raise Exception(f"{self.input_files} is not a valid Inputfile !")
         # close files and make them executable

@@ -4,10 +4,10 @@ import requests
 
 def validate_config(dict):
     """
-    check if all needed paramters are given in
+    check if all required paramters are given in
     the configuration before attempting to setup everything
     """
-    needed_keys = [
+    required_keys = [
         "request_id",
         "label",
         "input_files",
@@ -15,15 +15,16 @@ def validate_config(dict):
         "output_path",
         "batch_system",
         "total_events",
-        "cpus_per_job",
         "events_per_job",
-        "accounting_group",
     ]
+    keys_with_defaults = ["cpus_per_job", "accounting_group"]
+    all_possible_keys = required_keys + keys_with_defaults
+    # check if all given keys are valid
     for key in dict.keys():
-        if key not in needed_keys:
+        if key not in all_possible_keys:
             return False
-
-    if len(dict.keys()) < 8:
+    # check if all required keys are given
+    if len(dict.keys()) < len(required_keys):
         return False
     return True
 
@@ -48,23 +49,19 @@ def initiate_cmssw(workdir, version, arch, setupfile, initfile):
     """
     os.environ["SCRAM_ARCH"] = arch
     setupfile.write(
-        f"""
-export SCRAM_ARCH={arch}
-source /cvmfs/cms.cern.ch/cmsset_default.sh
-seed=$(($(date +%s) % 100 + 1))
-cd {os.path.join(workdir)}
-scram p {version}
-cd {os.path.join(version)}/src
-eval `scram runtime -sh`
-"""
+        f"export SCRAM_ARCH={arch}\n"
+        "source /cvmfs/cms.cern.ch/cmsset_default.sh\n"
+        "seed=$(($(date +%s) % 100 + 1))\n"
+        f"cd {os.path.join(workdir)}\n"
+        f"scram p {version}\n"
+        f"cd {os.path.join(version)}/src\n"
+        "eval `scram runtime -sh`\n"
     )
 
     initfile.write(
-        f"""
-source /cvmfs/cms.cern.ch/cmsset_default.sh
-cd {os.path.join(workdir, version)}/src
-eval `scram runtime -sh`
-"""
+        f"source /cvmfs/cms.cern.ch/cmsset_default.sh\n"
+        f"cd {os.path.join(workdir, version)}/src\n"
+        "eval `scram runtime -sh`\n"
     )
 
 
@@ -83,17 +80,10 @@ def getFragment(id, fragment, fragmentPath):
 
 
 def scram(path, setupfile, initfile):
-    setupfile.write(
-        """
-scram b
-cd ../../
-"""
-    )
+    setupfile.write("scram b\n" "cd ../../\n")
     initfile.write(
-        """
-cd ../../../../
-source /cvmfs/grid.cern.ch/umd-c7ui-latest/etc/profile.d/setup-c7-ui-example.sh
-"""
+        "cd ../../../../\n"
+        "source /cvmfs/grid.cern.ch/umd-c7ui-latest/etc/profile.d/setup-c7-ui-example.sh\n"
     )
 
 
@@ -138,40 +128,37 @@ def updateDriverCommands(
             commandList[i + 1] = str(filename)
         if "$EVENTS" in part:
             commandList[i] = str(events_per_job)
-        # This only works for CMMSSW_10_6_28 and above: 
+        # This only works for CMMSSW_10_6_28 and above:
         # https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookGenMultithread
         # if "||" in part and cpus_per_job > 1:
-        #     commandList[i] = f"--Threads {cpus_per_job} ||" 
+        #     commandList[i] = f"--Threads {cpus_per_job} ||"
     setupfile.write(" ".join(commandList))
     setupfile.write("\n")
     if debug:
         print(f"Generated cmsDriver command for {filename}:\n\t{' '.join(commandList)}")
     return filename
 
+
 def appendMultiThreading(configfile, cpus_per_job):
     """
     Add multi-threading to the given cmsRun config
     """
     configfile.write(
-        f"""
-process.options.numberOfThreads=cms.untracked.uint32({cpus_per_job})
-process.options.numberOfStreams=cms.untracked.uint32(0)
-"""
+        f"process.options.numberOfThreads=cms.untracked.uint32({cpus_per_job})\n"
+        "process.options.numberOfStreams=cms.untracked.uint32(0)\n"
     )
+
 
 def appendSeeds(configfile):
     """
     Add random seeds to the given cmsRun config
     """
     configfile.write(
-        """
-####@FILE_NAMES@, @SKIP_EVENTS@, @MAX_EVENTS@
-from IOMC.RandomEngine.RandomServiceHelper import RandomNumberServiceHelper
-randSvc = RandomNumberServiceHelper(process.RandomNumberGeneratorService)
-randSvc.populate()
-print("Generator random seed: %s" % process.RandomNumberGeneratorService.generator.initialSeed)
-
-"""
+        "####@FILE_NAMES@, @SKIP_EVENTS@, @MAX_EVENTS@\n"
+        "from IOMC.RandomEngine.RandomServiceHelper import RandomNumberServiceHelper\n"
+        "randSvc = RandomNumberServiceHelper(process.RandomNumberGeneratorService)\n"
+        "randSvc.populate()\n"
+        'print("Generator random seed: %s" % process.RandomNumberGeneratorService.generator.initialSeed)\n'
     )
 
 
