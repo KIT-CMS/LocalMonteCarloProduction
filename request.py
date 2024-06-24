@@ -1,7 +1,9 @@
-import requests
 import os
-import helpers
 import subprocess
+
+import requests
+
+import helpers
 
 
 class McmRequest:
@@ -30,9 +32,11 @@ class McmRequest:
         self.tasks = []
         self.gc_parameters = {
             "workdir": self.workdir + "/gc_workdir",
-            "jobs": f"jobs = {int(self.total_events / self.events_per_job)}"
-            if not self.input_files
-            else "",
+            "jobs": (
+                f"jobs = {int(self.total_events / self.events_per_job)}"
+                if not self.input_files
+                else ""
+            ),  # only set number of jobs if no input files are given which happens in the first step of the simulation chain
             "config_file": "",
             "events_per_job": str(self.events_per_job),
             "se_output_files": "",
@@ -164,13 +168,13 @@ class McmRequest:
         # check if input file is a dbs link or a filelist
         if self.input_files != "":
             if os.path.isfile(self.input_files):
-                self.gc_parameters[
-                    "dataset"
-                ] = f"dataset = {self.label} : list:{self.input_files}"
+                self.gc_parameters["dataset"] = (
+                    f"dataset = {self.label} : list:{self.input_files}"
+                )
             elif len(self.input_files.split("/")) == 4:
-                self.gc_parameters[
-                    "dataset"
-                ] = f"dataset = {self.label} : {self.input_files}"
+                self.gc_parameters["dataset"] = (
+                    f"dataset = {self.label} : {self.input_files}"
+                )
             else:
                 raise Exception(f"{self.input_files} is not a valid Inputfile !")
         # close files and make them executable
